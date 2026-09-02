@@ -8,6 +8,7 @@ from bokeh.plotting import figure, show
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 from astropy.time import Time
+import numpy as np
 
 from hwo_gtvt.display_results import get_visibility_windows
 from hwo_gtvt.utils import HWO_INSTRUMENTS
@@ -44,13 +45,16 @@ def plot_visibility(ephemeris, instrument=None, name=None, write_plot=None):
             data_to_plot = df.loc[start:end]
             min_PA_data = data_to_plot[instrument.upper() + "_min_pa_angle"]
             max_PA_data = data_to_plot[instrument.upper() + "_max_pa_angle"]
+
             plt.fill_between(
                 data_to_plot["times"], min_PA_data, max_PA_data, color="grey"
             )
+            if instrument.lower() == "v3pa":
+                plt.plot(data_to_plot["times"], data_to_plot[instrument.upper()], 'b-', linewidth=2)
             plt.fmt_xdata = DateFormatter("%Y-%m-%d")
 
         if instrument.lower() == "v3pa":
-            plt.ylabel(r"Available Position Angles ($^\circ$)", fontsize=18)
+            plt.ylabel(r"Available V3 Position Angles ($^\circ$)", fontsize=18)
         else:
             plt.ylabel(r"Available Aperture Position Angles ($^\circ$)", fontsize=18)
 
